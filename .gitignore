@@ -1,0 +1,5 @@
+.vscode/
+kozos
+*.elf
+*.hex
+*.o
