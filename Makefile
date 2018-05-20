@@ -12,6 +12,8 @@ RANLIB  = $(ADDNAME)ranlib
 STRIP   = $(ADDNAME)strip
 BIN2HEX = $(ADDNAME)bin2hex
 
+GDB			= $(ADDNAME)gdb
+
 
 OBJS  = startup.o main.o hardware.o interrupt.o vector.o intr.o
 OBJS += lib.o serial.o timer.o
@@ -25,7 +27,8 @@ CFLAGS = -Wall -march=m4k -EL -nostdinc -nostdlib -fno-builtin
 CFLAGS += -I. 
 CFLAGS += -G0 #これをしないとエラーが出る
 CFLAGS += -Os
-CFLAGS += -DKOZOS -DDEBUG
+CFLAGS += -DKOZOS -DDEBUG 
+CFLAGS += -DSIMULATOR
 
 LFLAGS = -static -T ld.scr -L.
 
@@ -62,3 +65,6 @@ clean :
 
 line :
 		wc -l *.c *.h *.s *.S ld.scr Makefile
+
+sim : $(TARGET)
+		$(GDB) $(TARGET).elf
