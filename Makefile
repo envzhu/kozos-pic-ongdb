@@ -12,7 +12,8 @@ RANLIB  = $(ADDNAME)ranlib
 STRIP   = $(ADDNAME)strip
 BIN2HEX = $(ADDNAME)bin2hex
 
-GDB			= $(ADDNAME)gdb
+GDB			= mipsisa32r2-elf-gdb
+RUN			= mipsisa32r2-elf-run
 
 
 OBJS  = startup.o main.o hardware.o interrupt.o vector.o intr.o
@@ -28,7 +29,10 @@ CFLAGS += -I.
 CFLAGS += -G0 #これをしないとエラーが出る
 CFLAGS += -Os
 CFLAGS += -DKOZOS -DDEBUG 
+
+# cflags for GDB sim
 CFLAGS += -DSIMULATOR
+CFLAGS += -g
 
 LFLAGS = -static -T ld.scr -L.
 
@@ -68,3 +72,5 @@ line :
 
 sim : $(TARGET)
 		$(GDB) $(TARGET).elf
+run : $(TARGET)
+		$(RUN) $(TARGET).elf
