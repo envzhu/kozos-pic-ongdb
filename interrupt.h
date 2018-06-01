@@ -1,15 +1,13 @@
 #ifndef _INTERRUPT_H_INCLUDED_
 #define _INTERRUPT_H_INCLUDED_
 
-/* 以下はリンカ・スクリプトで定義してあるシンボル */
-extern char softvec;
-#define SOFTVEC_ADDR (&softvec)
+#include "intr.h"
 
 typedef short softvec_type_t;
 
 typedef void (*softvec_handler_t)(softvec_type_t type, unsigned long sp);
 
-#define SOFTVECS ((softvec_handler_t *)SOFTVEC_ADDR)
+char SOFTVECS[SOFTVEC_TYPE_NUM];
 
 #define INTR_ENABLE  asm volatile ("ei")
 #define INTR_DISABLE asm volatile ("di")
