@@ -21,7 +21,10 @@ static int start_threads(int argc, char *argv[])
   kz_chpri(15); /* 優先順位を下げて，アイドルスレッドに移行する */
   INTR_ENABLE; /* 割込み有効にする */
   while (1) {
-    asm volatile ("wait"); /* 省電力モードに移行 */
+    /* GDB8.2のバグのためか,wait命令が使えないので、無効化する */
+    #ifndef SIMULATOR
+      asm volatile ("wait"); /* 省電力モードに移行 */
+    #endif
   }
 
   return 0;
