@@ -117,6 +117,7 @@ static struct {
 /* デバイス初期化 */
 int serial_init(int index)
 {
+  #ifndef SIMULATOR
   if(!((index==0)|(index==1)))  return -1; 
 
   volatile struct pic_uart *uart = regs[index].uart;
@@ -141,6 +142,10 @@ int serial_init(int index)
     IFS1CLR = PIC_UART2_RECV_INTTERUPT_FLAG|PIC_UART2_SEND_INTTERUPT_FLAG;
 	}
 	return 0;
+
+  #else
+  return 0;
+  #endif
 }
 
 /* 送信可能か？ */
@@ -154,6 +159,7 @@ int serial_is_send_enable(int index)
 /* １文字送信 */
 int serial_send_byte(int index, unsigned char c)
 {
+  #ifndef SIMULATOR
   volatile struct pic_uart *uart = regs[index].uart;
 
   /* 送信可能になるまで待つ */
@@ -167,6 +173,11 @@ int serial_send_byte(int index, unsigned char c)
     IFS1CLR=PIC_UART2_SEND_INTTERUPT_FLAG;
 
   return 0;
+  
+  #else
+  __write(index, &c, 1);
+  return 0;
+  #endif
 }
 
 /* 受信可能か？ */

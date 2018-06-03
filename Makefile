@@ -15,9 +15,11 @@ BIN2HEX = $(ADDNAME)bin2hex
 GDB			= mipsisa32r2-elf-gdb
 RUN			= mipsisa32r2-elf-run
 
+OBJS  = startup.o main.o interrupt.o vector.o intr.o
+OBJS += lib.o 
 
-OBJS  = startup.o main.o hardware.o interrupt.o vector.o intr.o
-OBJS += lib.o serial.o timer.o
+# hardware-dependent sources
+OBJS += hardware.o serial.o timer.o sim-io.o
 
 # sources of kozos
 OBJS += kozos.o syscall.o memory.o consdrv.o tmrdrv.o command.o
