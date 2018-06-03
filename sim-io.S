@@ -22,30 +22,30 @@
 
   .section .text,"ax",@progbits
   .set noreorder
-  .globl  __read
-  .type   __read, @function
-__read:
+  .globl  read
+  .type   read, @function
+read:
   .long   RSVD(SYS_read)
   jr      $ra
   nop
 
-  .globl  __write
-  .type   __write, @function
-__write:
+  .globl  write
+  .type   write, @function
+write:
   .long   RSVD(SYS_write)
   jr      $ra
   nop
 
-  .globl  __open
-  .type   __open, @function
-__open:
+  .globl  open
+  .type   open, @function
+open:
   .long   RSVD(SYS_open)
   jr      $ra
   nop
 
-  .globl  __close
-  .type   __close, @function
-__close:
+  .globl  close
+  .type   close, @function
+close:
   .long   RSVD(SYS_close)
   jr      $ra
   nop

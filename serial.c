@@ -175,7 +175,7 @@ int serial_send_byte(int index, unsigned char c)
   return 0;
   
   #else
-  __write(index, &c, 1);
+  write(index, &c, 1);
   return 0;
   #endif
 }
