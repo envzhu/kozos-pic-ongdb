@@ -7,7 +7,7 @@ typedef short softvec_type_t;
 
 typedef void (*softvec_handler_t)(softvec_type_t type, unsigned long sp);
 
-char SOFTVECS[SOFTVEC_TYPE_NUM];
+unsigned int SOFTVECS[SOFTVEC_TYPE_NUM];
 
 #define INTR_ENABLE  asm volatile ("ei")
 #define INTR_DISABLE asm volatile ("di")
