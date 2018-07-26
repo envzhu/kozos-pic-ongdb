@@ -175,7 +175,7 @@ int serial_send_byte(int index, unsigned char c)
   return 0;
   
   #else
-  write(index, &c, 1);
+  write(SIM_STDOUT, &c, 1);
   return 0;
   #endif
 }
@@ -190,6 +190,7 @@ int serial_is_recv_enable(int index)
 /* １文字受信 */
 unsigned char serial_recv_byte(int index)
 {
+  #ifndef SIMULATOR
   volatile struct pic_uart *uart = regs[index].uart;
   unsigned char c;
 
@@ -208,6 +209,12 @@ unsigned char serial_recv_byte(int index)
     IFS1CLR=PIC_UART2_RECV_INTTERUPT_FLAG;
 
   return c;
+
+  #else
+  unsigned char c;
+  read(SIM_STDIN, &c, 1);
+  return c;
+  #endif
 }
 
 /* 送信割込み有効か？ */
