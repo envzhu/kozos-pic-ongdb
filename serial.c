@@ -117,7 +117,7 @@ static struct {
 /* デバイス初期化 */
 int serial_init(int index)
 {
-  #ifndef SIMULATOR
+  //#ifndef SIMULATOR
   if(!((index==0)|(index==1)))  return -1; 
 
   volatile struct pic_uart *uart = regs[index].uart;
@@ -131,9 +131,9 @@ int serial_init(int index)
   uart ->UxSTA   = 0x0;
   uart ->UxTXREG = 0x0;
   uart ->UxBRG   = F_PBCLK / 9600 / 16 - 1; //UxBRG = F_PBCLK / baud_rate / 16
-  uart ->UxSTASET= PIC_UART_UxSTA_URXEN | PIC_UART_UxSTA_UTXEN;
+  uart ->UxSTA = PIC_UART_UxSTA_URXEN | PIC_UART_UxSTA_UTXEN;
   uart ->UxMODE  = PIC_UART_UxMODE_ON;
-
+  
   if(index==0){
     IPC8SET = 0b01001;
     IFS1CLR = PIC_UART1_RECV_INTTERUPT_FLAG|PIC_UART1_SEND_INTTERUPT_FLAG;
@@ -143,9 +143,6 @@ int serial_init(int index)
 	}
 	return 0;
 
-  #else
-  return 0;
-  #endif
 }
 
 /* 送信可能か？ */
@@ -159,7 +156,6 @@ int serial_is_send_enable(int index)
 /* １文字送信 */
 int serial_send_byte(int index, unsigned char c)
 {
-  #ifndef SIMULATOR
   volatile struct pic_uart *uart = regs[index].uart;
 
   /* 送信可能になるまで待つ */
@@ -173,11 +169,6 @@ int serial_send_byte(int index, unsigned char c)
     IFS1CLR=PIC_UART2_SEND_INTTERUPT_FLAG;
 
   return 0;
-  
-  #else
-  write(SIM_STDOUT, &c, 1);
-  return 0;
-  #endif
 }
 
 /* 受信可能か？ */
@@ -190,7 +181,6 @@ int serial_is_recv_enable(int index)
 /* １文字受信 */
 unsigned char serial_recv_byte(int index)
 {
-  #ifndef SIMULATOR
   volatile struct pic_uart *uart = regs[index].uart;
   unsigned char c;
 
@@ -209,12 +199,6 @@ unsigned char serial_recv_byte(int index)
     IFS1CLR=PIC_UART2_RECV_INTTERUPT_FLAG;
 
   return c;
-
-  #else
-  unsigned char c;
-  read(SIM_STDIN, &c, 1);
-  return c;
-  #endif
 }
 
 /* 送信割込み有効か？ */
