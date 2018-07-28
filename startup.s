@@ -4,6 +4,19 @@
 .ent _start
 .global _start
 _start:
+
+  /* set up STATUS register */ 
+  mtc0    $0, $12, 0      # BEV = 0 (enable vectored interrupts), IPL = 0 (lowest priority run mode).
+
+  /* set up shadow register */ 
+  mfc0    $t1, $12, 2
+  add     $t3, $t1, $0
+  ext     $t2, $t1, 26, 4
+  ins     $t1, $t2, 6, 4
+  mtc0    $t1, $12, 2
+  ehb
+  mtc0    $t3, $12, 2     # SRSCtl register
+
   /* set vector address */
   la $t1, _ebase_address
   mtc0 $t1, $15, 1        # EBASE register
