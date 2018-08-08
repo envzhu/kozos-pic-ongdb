@@ -79,7 +79,7 @@ static int consdrv_intrproc(struct consreg *cons)
     c = serial_recv_byte(cons->index);
     if (c == '\r') /* 改行コード変換(\r→\n) */
       c = '\n';
-
+      
     if (cons->id) {
       if ((c != '\n')&&(cons->recv_len<CONS_BUFFER_SIZE-1)) {
   send_string(cons, &c, 1); /* エコーバック処理 */
@@ -100,7 +100,7 @@ static int consdrv_intrproc(struct consreg *cons)
 	 * (割込みハンドラなので，サービス・コールを利用する)
 	 */
   send_string(cons, "\n", 1); /* 改行する */
-	p = kx_kmalloc(CONS_BUFFER_SIZE);
+  p = kx_kmalloc(CONS_BUFFER_SIZE);
 	memcpy(p, cons->recv_buf, cons->recv_len);
 	kx_send(MSGBOX_ID_CONSINPUT, cons->recv_len, p);
 	cons->recv_len = 0;
@@ -111,6 +111,7 @@ static int consdrv_intrproc(struct consreg *cons)
   if (serial_is_send_enable(cons->index)) { /* 送信割込み */
     if (!cons->id || !cons->send_len) {
       /* 送信データが無いならば，送信処理終了 */
+      serial_intr_send_flag_clear(cons->index);
       serial_intr_send_disable(cons->index);
     } else {
       /* 送信データがあるならば，引続き送信する */

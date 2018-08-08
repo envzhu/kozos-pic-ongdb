@@ -3,7 +3,7 @@
 
 #define SERIAL_UART_NUM 2
 
-#define PIC_UART1 ((volatile struct pic_uart *)0xBF806100)
+#define PIC_UART1 ((volatile struct pic_uart *)0xBF806000)
 #define PIC_UART2 ((volatile struct pic_uart *)0xBF806200)
 
 
@@ -160,14 +160,15 @@ int serial_send_byte(int index, unsigned char c)
 
   /* 送信可能になるまで待つ */
   while (!serial_is_send_enable(index));
-  uart ->UxTXREG = c; /* 送信開始 */
-  
+    
   if(index==0)
     IFS1CLR=PIC_UART1_SEND_INTTERUPT_FLAG;
   
   if(index==1)
     IFS1CLR=PIC_UART2_SEND_INTTERUPT_FLAG;
 
+  uart ->UxTXREG = c; /* 送信開始 */
+  
   return 0;
 }
 
@@ -233,6 +234,17 @@ void serial_intr_send_disable(int index)
   if(index==1)
     IEC1CLR=PIC_UART2_SEND_INTTERUPT_FLAG;
 
+}
+
+/* 送信割込みフラグのクリア*/
+void serial_intr_send_flag_clear(int index)
+{
+  if(index==0)
+    IFS1CLR=PIC_UART1_SEND_INTTERUPT_FLAG;
+  
+  if(index==1)
+    IFS1CLR=PIC_UART2_SEND_INTTERUPT_FLAG;
+    
 }
 
 /* 受信割込み有効か？ */
