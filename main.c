@@ -8,23 +8,20 @@
 int consdrv_main(int argc, char *argv[]);
 int tmrdrv_main(int argc, char *argv[]);
 
-/* User taska */
+/* User tasks */
 int command_main(int argc, char *argv[]);
 
 /* システム・タスクとユーザ・タスクの起動 */
 static int start_threads(int argc, char *argv[])
 {
   kz_run(consdrv_main,  "consdrv",  1, 0x100, 0, NULL);
-  kz_run(tmrdrv_main,   "tmrdrv",   2, 0x100, 0, NULL);
+  //kz_run(tmrdrv_main,   "tmrdrv",   2, 0x100, 0, NULL);
   kz_run(command_main,  "command",  8, 0x100, 0, NULL);
 
   kz_chpri(15); /* 優先順位を下げて，アイドルスレッドに移行する */
   INTR_ENABLE; /* 割込み有効にする */
   while (1) {
-    /* GDB8.2のバグのためか,wait命令が使えないので、無効化する */
-    #ifndef SIMULATOR
       asm volatile ("wait"); /* 省電力モードに移行 */
-    #endif
   }
 
   return 0;
@@ -38,6 +35,7 @@ static int init(void)
   memset(&_bss_start, 0, (uint32)&_ebss - (uint32)&_bss_start);
 
   system_init();
+  serial_init(SERIAL_DEFAULT_DEVICE);
 
   return 0;
 }
